@@ -3,6 +3,10 @@
 #include "tools.h"
 
 int main(int argc, char* argv[]) {
-    greeting();
+    if (0) {
+        greeting();
+    } else {
+        test();
+    }
     return 0;
 }

@@ -1,6 +1,10 @@
 #ifndef ORDER_H
 #define ORDER_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 typedef struct Order {
     char id[20];
     char sender[20];
@@ -12,22 +16,25 @@ typedef struct Order {
     char status[20];
 } Order;
 
-void create_order(Order* order, const char* id, const char* sender, const char* sender_addr, const char* receiver, const char* receiver_addr, const char* description[100], double weight, const char* status);
-void print_order(Order* order);
+void create_order(Order* order, const char* id, const char* sender, const char* sender_addr, const char* receiver, const char* receiver_addr, const char* description, double weight, const char* status);
+int print_order(Order* order);
 void free_order(Order* order);
 double calc_price(Order* order);
 
-#define DEF_UPDATE_ORDER(__TYPE, __PROPERTY) \
-void update_order_##__PROPERTY(Order* order, __TYPE __PROPERTY)
+#define DEC_UPDATE_ORDER_STR(__PROPERTY) \
+void update_order_##__PROPERTY(Order* order, const char* __PROPERTY)
 
-DEF_UPDATE_ORDER(const char*, id);
-DEF_UPDATE_ORDER(const char*, sender);
-DEF_UPDATE_ORDER(const char*, sender_addr);
-DEF_UPDATE_ORDER(const char*, receiver);
-DEF_UPDATE_ORDER(const char*, receiver_addr);
-DEF_UPDATE_ORDER(const char*, description);
-DEF_UPDATE_ORDER(const char*, status);
-DEF_UPDATE_ORDER(double, weight);
+DEC_UPDATE_ORDER_STR(id);
+DEC_UPDATE_ORDER_STR(sender);
+DEC_UPDATE_ORDER_STR(sender_addr);
+DEC_UPDATE_ORDER_STR(receiver);
+DEC_UPDATE_ORDER_STR(receiver_addr);
+DEC_UPDATE_ORDER_STR(description);
+DEC_UPDATE_ORDER_STR(status);
+
+inline void update_order_weight(Order* order, double weight) {
+    order->weight = weight;
+}
 
 
 #endif // ORDER_H

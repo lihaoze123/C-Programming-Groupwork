@@ -8,5 +8,6 @@ include_directories(include/)
 add_executable(main
     src/main.c
     src/order_array.c
+    src/order.c
     src/tools.c
 )

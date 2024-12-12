@@ -7,6 +7,7 @@
 #include "order_array.h"
 
 void greeting();
+void test();
 
 int read_string(char* s, size_t size, FILE *stream);
 int read_line(char* s, size_t size, FILE *stream);
