@@ -48,14 +48,19 @@ Order* at(Order_array *array, size_t index) {
     return &array->orders[index];
 }
 
-int print_orders(const Order_array *array) {
+int fprint_orders(const Order_array *array, FILE *stream) {
     if (array == NULL)
         return 0;
 
     for (int i = 0; i < array->size; ++ i) {
-        print_order(at((Order_array*)array, i));
+        fprint_order(at((Order_array*)array, i), stream);
+        fprintf(stream, "\n");
     }
     return 1;
+}
+
+int print_orders(const Order_array *array) {
+    return fprint_orders(array, stdout);
 }
 
 Order* get_order(Order_array *array, const char *id) {
@@ -111,7 +116,23 @@ void free_order_array(Order_array *array) {
     free(array);
 }
 
+int is_sorted(void* arr, size_t nmemb, size_t size, int (*comp)(const void*, const void*)) {
+    for (int i = 0; i < nmemb - 1; ++ i) {
+        void* current = (char*) arr + i * size;
+        void* next = (char*) arr + (i + 1) * size;
+
+        if (comp(current, next) > 0) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 void sort_orders(Order_array *array, int (*comp)(const void*, const void*)) {
+    if (is_sorted(array->orders, array->size, sizeof(Order), comp)) {
+        return;
+    }
     qsort(array->orders, array->size, sizeof(Order), comp);
 }
 

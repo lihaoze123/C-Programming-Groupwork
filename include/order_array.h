@@ -20,6 +20,7 @@ void free_order_array(Order_array *array);
 Order* at(Order_array *array, size_t index);
 Order* get_order(Order_array *array, const char *id);
 
+int fprint_orders(const Order_array *array, FILE *stream);
 int print_orders(const Order_array *array);
 
 #define DEC_COMP_BY_STR(__PROPERTY) \
@@ -35,6 +36,7 @@ DEC_COMP_BY_STR(status);
 
 int comp_by_weight(const void* lhs, const void* rhs);
 
+int is_sorted(void* arr, size_t nmemb, size_t size, int (*comp)(const void*, const void*));
 void sort_orders(Order_array *array, int (*comp)(const void*, const void*));
 
 
