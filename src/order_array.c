@@ -97,7 +97,7 @@ int remove_order(Order_array *array, const char* id) {
     size_t pos = find - array->orders;
     Order* new_ptr = (Order*) malloc((array->size - 1) * sizeof(Order));
 
-    for (int i = 0, j = 0; i < array->size - 1; ++ i) {
+    for (int i = 0, j = 0; i < array->size; ++ i) {
         if (i == pos) 
             continue;
         memcpy(&new_ptr[j ++], &array->orders[i], sizeof(Order));
