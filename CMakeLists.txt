@@ -1,32 +1,40 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.15)
 project(LogisticsManagementSystem)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 23)
 
 find_package(GTest REQUIRED)
+enable_testing()
+add_test(NAME OrderTests COMMAND OrderTests)
 
 include_directories(include/)
 
-add_executable(main
-    src/main.c
+add_library(OrderLib STATIC
     src/order_array.c
     src/order.c
     src/tools.c
 )
 
-enable_testing()
+target_link_directories(OrderLib
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
+)
+
+add_executable(main
+    app/main.c
+)
+
+target_link_libraries(main
+    OrderLib
+)
 
 add_executable(OrderTests 
-    src/unit_test.cpp
-    src/order_array.c
-    src/order.c
-    src/tools.c
+    test/unit_test.cpp
 )
 
-add_test(NAME OrderTests COMMAND OrderTests)
-
 target_link_libraries(OrderTests
+    OrderLib
     GTest::GTest
     GTest::Main
 )
