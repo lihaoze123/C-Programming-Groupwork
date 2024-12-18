@@ -1,17 +1,5 @@
 #include "tools.h"
 
-void greeting() {
-    printf("欢迎使用物流快递运单管理系统！\n");
-    printf("您可以执行以下操作：\n");
-    printf("1. 添加新运单\n");
-    printf("2. 查看所有运单\n");
-    printf("3. 查找运单\n");
-    printf("4. 删除运单\n");
-    printf("5. 更新运单状态\n");
-    printf("请输入您的选择 (1-5): ");
-}
-
-
 int read_string(char* s, size_t size, FILE *stream) {
     if (stream == NULL)
         return 0;
