@@ -32,6 +32,7 @@ void print() {
 
 void exit_system() {
     log_message(LOG_INFO, "退出系统");
+    free_order_array(order_array);
     exit(0);
 }
 
