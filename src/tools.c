@@ -102,30 +102,35 @@ int edit_distance(const char* s1, const char* s2) {
     int n = strlen(s1);
     int m = strlen(s2);
     
-    if (n == 0) return m;
-    if (m == 0) return n;
+    if (m == 0) return 0;
+    if (n < m) return m;
     
-    int dp[n + 1][m + 1];
-    
-    for (int i = 0; i <= n; ++ i) {
-        dp[i][0] = i;
-    }
-    for (int j = 0; j <= m; ++ j) {
-        dp[0][j] = j;
-    }
-    
-    for (int i = 1; i <= n; ++ i) {
-        for (int j = 1; j <= m; ++ j) {
-            if (s1[i - 1] == s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1];
-            } else {
-                int min = dp[i - 1][j - 1];
-                if (dp[i - 1][j] < min) min = dp[i - 1][j];
-                if (dp[i][j - 1] < min) min = dp[i][j - 1];
-                dp[i][j] = min + 1;
+    int min_dist = m;
+    for (int st = 0; st <= n - m; st++) {
+        int dp[m + 1][m + 1];
+        
+        for (int i = 0; i <= m; i++) {
+            dp[i][0] = i;
+            dp[0][i] = i;
+        }
+        
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (s1[st + i - 1] == s2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    int min = dp[i - 1][j - 1];
+                    if (dp[i - 1][j] < min) min = dp[i - 1][j];
+                    if (dp[i][j - 1] < min) min = dp[i][j - 1];
+                    dp[i][j] = min + 1;
+                }
             }
+        }
+        
+        if (dp[m][m] < min_dist) {
+            min_dist = dp[m][m];
         }
     }
     
-    return dp[n][m];
+    return min_dist;
 }

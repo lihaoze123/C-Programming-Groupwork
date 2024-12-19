@@ -255,7 +255,7 @@ void print_menu() {
 int main(int argc, char* argv[]) {
     init_logger("order_system.log");
 
-    order_array = create_order_array(0);
+    order_array = create_order_array(1);
     load_orders(order_array, "orders.txt");
 
     while (1) {

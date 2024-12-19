@@ -1,37 +1,48 @@
 #include "order_array.h"
 
-Order_array* create_order_array(size_t size) {
+Order_array* create_order_array(size_t capacity) {
+    if (capacity == 0) {
+        log_message(LOG_ERROR, "capacity 不能为 0");
+        return NULL;
+    }
+
     Order_array* res = (Order_array*) malloc(sizeof(Order_array));
     if (res == NULL) {
         log_message(LOG_ERROR, "无法分配 Order_array 内存");
         return NULL;
     }
 
-    res->orders = (Order*) malloc(size * sizeof(Order));
+    res->orders = (Order*) malloc(capacity * sizeof(Order));
     if (res->orders == NULL) {
         log_message(LOG_ERROR, "无法分配 orders 数组内存");
         free(res);
         return NULL;
     }
 
-    res->size = size;
+    res->size = 0;
+    res->capacity = capacity;
     return res;
 }
 
-int reserve_capacity(Order_array *array, size_t new_size) {
-    if (new_size < array->size) {
-        log_message(LOG_ERROR, "new_size 小于当前 size");
-        return 0;
+int reserve_capacity(Order_array *array, size_t new_capacity) {
+    if (new_capacity < array->capacity) {
+        log_message(LOG_INFO, "new_capacity 小于当前 capacity");
+        return 1;
     }
 
-    Order* new_ptr = (Order*) realloc(array->orders, new_size * sizeof(Order)); 
+    size_t t = array->size == 0 ? 1 : array->size;
+    while (t < new_capacity) {
+        t *= 2;
+    }
+
+    Order* new_ptr = (Order*) realloc(array->orders, t * sizeof(Order)); 
     if (new_ptr == NULL) {
         log_message(LOG_ERROR, "无法分配内存");
         return 0;
     }
 
     array->orders = new_ptr;
-    array->size = new_size;
+    array->capacity = t;
 
     return 1;
 }
@@ -42,7 +53,9 @@ int add_order(Order_array *array, const Order* order) {
         return 0;
     }
 
-    memcpy(&(array->orders[array->size - 1]), order, sizeof(Order));
+    memcpy(&(array->orders[array->size]), order, sizeof(Order));
+    array->size ++;
+
     return 1;
 }
 
@@ -209,21 +222,24 @@ Order* fuzzy_search_order(Order_array *array, const char *keyword) {
 
     Order* min = at(array, 0);
     int min_dist = 1e9;
+    char str[512];
 
     for (int i = 0; i < array->size; ++ i) {
-        char* str = (char*) calloc(512, sizeof(char));
         str[0] = '\0';
-        strcat(str, at(array, i)->id);
-        strcat(str, at(array, i)->sender);
-        strcat(str, at(array, i)->receiver);
-        strcat(str, at(array, i)->sender_addr);
-        strcat(str, at(array, i)->receiver_addr);
-        strcat(str, at(array, i)->description);
-        strcat(str, at(array, i)->status);
+        Order* cur = at(array, i);
+        
+        strcat(str, cur->id);
+        strcat(str, cur->sender);
+        strcat(str, cur->receiver);
+        strcat(str, cur->sender_addr);
+        strcat(str, cur->receiver_addr);
+        strcat(str, cur->description);
+        strcat(str, cur->status);
     
-        if (edit_distance(str, keyword) < min_dist) {
-            min_dist = edit_distance(str, keyword);
-            min = at(array, i);
+        int dist = edit_distance(str, keyword);
+        if (dist < min_dist) {
+            min_dist = dist;
+            min = cur;
         }
     }
 

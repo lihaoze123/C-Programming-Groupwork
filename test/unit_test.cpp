@@ -14,7 +14,7 @@ class OrderTest : public ::testing::Test {
 protected:
     void SetUp() override {
         // 初始化测试数据
-        order_array = create_order_array(0);
+        order_array = create_order_array(1);
         order = (Order*) malloc(sizeof(Order));
     }
 

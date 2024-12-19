@@ -9,11 +9,11 @@
 
 typedef struct Order_array {
     Order* orders;
-    size_t size;
+    size_t size, capacity;
 } Order_array;
 
-Order_array* create_order_array(size_t size);
-int reserve_capacity(Order_array *array, size_t new_size);
+Order_array* create_order_array(size_t capacity);
+int reserve_capacity(Order_array *array, size_t new_capacity);
 int add_order(Order_array *array, const Order* order);
 int remove_order(Order_array *array, const char* id);
 void free_order_array(Order_array *array);
