@@ -16,4 +16,6 @@ int get_file_order(Order *order, FILE *stream);
 int load_orders(Order_array *array, const char *filename);
 int save_orders(Order_array *array, const char *filename);
 
+int edit_distance(const char* s1, const char* s2);
+
 #endif // TOOLS_H

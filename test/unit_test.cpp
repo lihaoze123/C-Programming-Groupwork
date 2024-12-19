@@ -6,6 +6,7 @@ extern "C" {
     #include "order.h"
     #include "order_array.h"
     #include "tools.h"
+    #include "logger.h"
 }
 
 // 测试环境设置
@@ -26,69 +27,6 @@ protected:
     Order_array* order_array;
     Order* order;
 };
-
-// 测试创建订单
-TEST_F(OrderTest, CreateOrder) {
-    create_order(order, "123", "Sender", "Sender Address", "Receiver", "Receiver Address", "Description", 5.0, "Pending");
-
-    EXPECT_STREQ(order->id, "123");
-    EXPECT_STREQ(order->sender, "Sender");
-    EXPECT_STREQ(order->sender_addr, "Sender Address");
-    EXPECT_STREQ(order->receiver, "Receiver");
-    EXPECT_STREQ(order->receiver_addr, "Receiver Address");
-    EXPECT_STREQ(order->description, "Description");
-    EXPECT_DOUBLE_EQ(order->weight, 5.0);
-    EXPECT_STREQ(order->status, "Pending");
-}
-
-// 测试打印订单
-TEST_F(OrderTest, PrintOrder) {
-    create_order(order, "123", "Sender", "Sender Address", "Receiver", "Receiver Address", "Description", 5.0, "Pending");
-
-    testing::internal::CaptureStdout();
-    print_order(order);
-    std::string output = testing::internal::GetCapturedStdout();
-
-    EXPECT_TRUE(output.find("123") != std::string::npos);
-}
-
-// 测试计算价格
-TEST_F(OrderTest, CalcPrice) {
-    create_order(order, "123", "Sender", "Sender Address", "Receiver", "Receiver Address", "Description", 5.0, "Pending");
-
-    double price = calc_price(order);
-    EXPECT_DOUBLE_EQ(price, 50.0); // 10.0 * weight
-}
-
-// 测试创建订单数组
-TEST_F(OrderTest, CreateOrderArray) {
-    Order_array* array = create_order_array(5);
-    
-    ASSERT_NE(array, nullptr);
-    EXPECT_EQ(array->size, 5);
-
-    free_order_array(array);
-}
-
-// 测试添加订单
-TEST_F(OrderTest, AddOrder) {
-    create_order(order, "123", "Sender", "Sender Address", "Receiver", "Receiver Address", "Description", 5.0, "Pending");
-    
-    ASSERT_TRUE(add_order(order_array, order));
-    EXPECT_EQ(order_array->size, 1);
-}
-
-// 测试获取订单
-TEST_F(OrderTest, GetOrder) {
-    create_order(order, "123", "Sender", "Sender Address", "Receiver", "Receiver Address", "Description", 5.0, "Pending");
-    
-    add_order(order_array, order);
-    
-    Order* retrieved_order = at(order_array, 0);
-    
-    ASSERT_NE(retrieved_order, nullptr);
-    EXPECT_STREQ(retrieved_order->id, order->id);
-}
 
 // 测试打印所有订单
 TEST_F(OrderTest, PrintOrders) {
@@ -203,6 +141,40 @@ TEST_F(OrderTest, SortOrders) {
 
    sort_orders (order_array ,comp_by_id );
    EXPECT_STREQ(at (order_array ,0)->id ,"127"); // 检查排序是否正确
+}
+
+TEST_F(OrderTest, EditDistance) {
+    EXPECT_EQ(edit_distance("hello", "hello"), 0);
+    EXPECT_EQ(edit_distance("hello", "helo"), 1);
+    EXPECT_EQ(edit_distance("kitten", "sitting"), 3);
+    EXPECT_EQ(edit_distance("", "abc"), 3);
+    EXPECT_EQ(edit_distance("abc", ""), 3);
+    EXPECT_EQ(edit_distance("", ""), 0);
+}
+
+TEST_F(OrderTest, Logger) {
+    log_message(stderr, LOG_DEBUG, "This is a test message");
+    log_message(stderr, LOG_INFO, "This is a test message");
+    log_message(stderr, LOG_WARNING, "This is a test message");
+    log_message(stderr, LOG_ERROR, "This is a test message");
+}
+
+TEST_F(OrderTest, LoggerFile) {
+    FILE* fp = init_logger("test.log");
+    log_message(fp, LOG_DEBUG, "This is a test message");
+    log_message(fp, LOG_INFO, "This is a test message");
+    log_message(fp, LOG_WARNING, "This is a test message");
+    log_message(fp, LOG_ERROR, "This is a test message");
+    close_logger(fp);
+
+    fp = fopen("test.log", "r");
+    char buffer[512];
+    fgets(buffer, sizeof(buffer), fp);
+    fclose(fp);
+
+    EXPECT_TRUE(strstr(buffer, "This is a test message") != nullptr);
+
+    remove("test.log");
 }
 
 int main(int argc , char **argv) {

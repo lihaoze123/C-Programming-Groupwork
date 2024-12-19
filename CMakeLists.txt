@@ -14,6 +14,7 @@ add_library(OrderLib STATIC
     src/order_array.c
     src/order.c
     src/tools.c
+    src/logger.c
 )
 
 target_link_directories(OrderLib
