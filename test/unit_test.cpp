@@ -177,6 +177,29 @@ TEST_F(OrderTest, LoggerFile) {
     remove("test.log");
 }
 
+TEST_F(OrderTest, GetOrderByStr) {
+    create_order(order, "129", "Sender7", "Address7", "Receiver7", "Address7", "Description7", 35.0, "Pending");
+    add_order(order_array, order);
+
+    char buffer[512];
+
+    Order* find = get_order_by_id(order_array, "129");
+    sprint_order(find, buffer);
+    log_message(stderr, LOG_DEBUG, buffer);
+    EXPECT_EQ(strcmp(find->id, order->id) == 0, true);
+
+    find = get_order_by_sender(order_array, "Sender7");
+    sprint_order(find, buffer);
+    log_message(stderr, LOG_DEBUG, buffer);
+    EXPECT_EQ(strcmp(find->sender, order->sender) == 0, true);
+
+    find = get_order_by_receiver(order_array, "Receiver7");
+    sprint_order(find, buffer);
+    log_message(stderr, LOG_DEBUG, buffer);
+    EXPECT_EQ(strcmp(find->receiver, order->receiver) == 0, true);
+}
+
+
 int main(int argc , char **argv) {
     if (1) {
         ::testing::InitGoogleTest(&argc ,argv);

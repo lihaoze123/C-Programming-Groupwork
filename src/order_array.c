@@ -63,33 +63,12 @@ int print_orders(const Order_array *array) {
     return fprint_orders(array, stdout);
 }
 
-Order* get_order(Order_array *array, const char *id) {
-    sort_orders(array, comp_by_id);
-
-    size_t lo = 0, hi = array->size - 1;
-    while (lo < hi) {
-        size_t mid = (lo + hi + 1) / 2;
-        if (strcmp(at(array, mid)->id, id) <= 0) {
-            lo = mid; 
-        } else {
-            hi = mid - 1;
-        }
-    }
-
-    if (strcmp(at(array, lo)->id, id) == 0) {
-        return at(array, lo);
-    } else {
-        printf("不存在的运单号\n");
-        return NULL;
-    }
-}
-
 int remove_order(Order_array *array, const char* id) {
     if (array->size == 0) {
         return 0;
     }
 
-    Order* find = get_order(array, id);
+    Order* find = get_order_by_id(array, id);
     if (find == NULL) {
         return 0;
     }
@@ -158,3 +137,27 @@ int comp_by_weight(const void* lhs, const void* rhs) {
     return 0;
 }
 
+
+#define DEF_GET_ORDER_BY_STR(__PROPERTY) \
+Order* get_order_by_##__PROPERTY(Order_array *array, const char *value) { \
+    sort_orders(array, comp_by_##__PROPERTY); \
+    size_t lo = 0, hi = array->size - 1; \
+    while (lo < hi) { \
+        size_t mid = (lo + hi + 1) / 2; \
+        if (strcmp(at(array, mid)->__PROPERTY, value) <= 0) { \
+            lo = mid; \
+        } else { \
+            hi = mid - 1; \
+        } \
+    } \
+    if (strcmp(at(array, lo)->__PROPERTY, value) == 0) { \
+        return at(array, lo); \
+    } else { \
+        log_message(stderr, LOG_ERROR, "不存在的%s: %s", #__PROPERTY, value); \
+        return NULL; \
+    } \
+}
+
+DEF_GET_ORDER_BY_STR(id);
+DEF_GET_ORDER_BY_STR(sender);
+DEF_GET_ORDER_BY_STR(receiver);
