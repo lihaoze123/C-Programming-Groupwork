@@ -16,7 +16,6 @@ protected:
         // 初始化测试数据
         order_array = create_order_array(0);
         order = (Order*) malloc(sizeof(Order));
-        init_logger(NULL);
     }
 
     void TearDown() override {
@@ -215,21 +214,4 @@ TEST_F(OrderTest, FuzzySearchOrder) {
 
     find = fuzzy_search_order(order_array, "9");
     EXPECT_EQ(strcmp(find->id, at(order_array, 1)->id) == 0, true);
-}
-
-int main(int argc , char **argv) {
-    if (1) {
-        ::testing::InitGoogleTest(&argc ,argv);
-        return RUN_ALL_TESTS();
-    } else {
-        Order order;
-        create_order(&order,"127","Sender5","Address5","Receiver5","Address5","Description5",25.0,"Pending");
-
-        print_order(&order);
-
-        auto array = create_order_array(1);
-        array->orders[0] = order;
-
-        save_orders(array, "saved_orders.txt");
-    } 
 }

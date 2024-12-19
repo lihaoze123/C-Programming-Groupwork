@@ -31,6 +31,7 @@ target_link_libraries(main
 )
 
 add_executable(OrderTests 
+    test/main.cpp
     test/unit_test.cpp
 )
 
