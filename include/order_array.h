@@ -6,6 +6,7 @@
 #include <string.h>
 #include "order.h"
 #include "logger.h"
+
 typedef struct Order_array {
     Order* orders;
     size_t size;
@@ -18,6 +19,8 @@ int remove_order(Order_array *array, const char* id);
 void free_order_array(Order_array *array);
 
 Order* at(Order_array *array, size_t index);
+
+#include "tools.h"
 Order* fuzzy_search_order(Order_array *array, const char *keyword);
 
 #define DEC_GET_ORDER_BY_STR(__PROPERTY) \

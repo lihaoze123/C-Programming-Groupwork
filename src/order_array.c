@@ -161,3 +161,24 @@ Order* get_order_by_##__PROPERTY(Order_array *array, const char *value) { \
 DEF_GET_ORDER_BY_STR(id);
 DEF_GET_ORDER_BY_STR(sender);
 DEF_GET_ORDER_BY_STR(receiver);
+
+Order* fuzzy_search_order(Order_array *array, const char *keyword) {
+    Order* min = at(array, 0);
+    int min_dist = 1e9;
+
+    for (int i = 0; i < array->size; ++ i) {
+        char* str = strcat(at(array, i)->id, at(array, i)->sender);
+        str = strcat(str, at(array, i)->receiver);
+        str = strcat(str, at(array, i)->sender_addr);
+        str = strcat(str, at(array, i)->receiver_addr);
+        str = strcat(str, at(array, i)->description);
+        str = strcat(str, at(array, i)->status);
+    
+        if (edit_distance(str, keyword) < min_dist) {
+            min_dist = edit_distance(str, keyword);
+            min = at(array, i);
+        }
+    }
+
+    return min;
+}

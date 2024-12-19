@@ -199,6 +199,22 @@ TEST_F(OrderTest, GetOrderByStr) {
     EXPECT_EQ(strcmp(find->receiver, order->receiver) == 0, true);
 }
 
+TEST_F(OrderTest, FuzzySearchOrder) {
+    create_order(order, "130", "Sender8", "Address8", "Receiver8", "Address8", "Description8", 40.0, "Pending");
+    add_order(order_array, order);
+
+    create_order(order, "131", "Sender9", "Address9", "Receiver9", "Address9", "Description9", 45.0, "Pending");
+    add_order(order_array, order);
+
+    Order* find = fuzzy_search_order(order_array, "Sender8");
+    EXPECT_EQ(strcmp(find->id, at(order_array, 0)->id) == 0, true);
+
+    find = fuzzy_search_order(order_array, "Desc8");
+    EXPECT_EQ(strcmp(find->id, at(order_array, 0)->id) == 0, true);
+
+    find = fuzzy_search_order(order_array, "9");
+    EXPECT_EQ(strcmp(find->id, at(order_array, 1)->id) == 0, true);
+}
 
 int main(int argc , char **argv) {
     if (1) {
