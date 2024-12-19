@@ -16,6 +16,7 @@ protected:
         // 初始化测试数据
         order_array = create_order_array(0);
         order = (Order*) malloc(sizeof(Order));
+        init_logger(NULL);
     }
 
     void TearDown() override {
@@ -153,19 +154,19 @@ TEST_F(OrderTest, EditDistance) {
 }
 
 TEST_F(OrderTest, Logger) {
-    log_message(stderr, LOG_DEBUG, "This is a test message");
-    log_message(stderr, LOG_INFO, "This is a test message");
-    log_message(stderr, LOG_WARNING, "This is a test message");
-    log_message(stderr, LOG_ERROR, "This is a test message");
+    log_message(LOG_DEBUG, "This is a test message");
+    log_message(LOG_INFO, "This is a test message");
+    log_message(LOG_WARNING, "This is a test message");
+    log_message(LOG_ERROR, "This is a test message");
 }
 
 TEST_F(OrderTest, LoggerFile) {
     FILE* fp = init_logger("test.log");
-    log_message(fp, LOG_DEBUG, "This is a test message");
-    log_message(fp, LOG_INFO, "This is a test message");
-    log_message(fp, LOG_WARNING, "This is a test message");
-    log_message(fp, LOG_ERROR, "This is a test message");
-    close_logger(fp);
+    log_message(LOG_DEBUG, "This is a test message");
+    log_message(LOG_INFO, "This is a test message");
+    log_message(LOG_WARNING, "This is a test message");
+    log_message(LOG_ERROR, "This is a test message");
+    close_logger();
 
     fp = fopen("test.log", "r");
     char buffer[512];
@@ -185,17 +186,17 @@ TEST_F(OrderTest, GetOrderByStr) {
 
     Order* find = get_order_by_id(order_array, "129");
     sprint_order(find, buffer);
-    log_message(stderr, LOG_DEBUG, buffer);
+    log_message(LOG_DEBUG, buffer);
     EXPECT_EQ(strcmp(find->id, order->id) == 0, true);
 
     find = get_order_by_sender(order_array, "Sender7");
     sprint_order(find, buffer);
-    log_message(stderr, LOG_DEBUG, buffer);
+    log_message(LOG_DEBUG, buffer);
     EXPECT_EQ(strcmp(find->sender, order->sender) == 0, true);
 
     find = get_order_by_receiver(order_array, "Receiver7");
     sprint_order(find, buffer);
-    log_message(stderr, LOG_DEBUG, buffer);
+    log_message(LOG_DEBUG, buffer);
     EXPECT_EQ(strcmp(find->receiver, order->receiver) == 0, true);
 }
 

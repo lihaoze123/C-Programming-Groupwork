@@ -1,5 +1,7 @@
 #include "logger.h"
 
+static FILE* stream = NULL;
+
 static const char* level_str[] = {
     "DEBUG",
     "INFO",
@@ -8,10 +10,15 @@ static const char* level_str[] = {
 };
 
 FILE* init_logger(const char *filename) {
-    return fopen(filename, "a");
+    if (filename == NULL) {
+        stream = stderr;
+    } else if (stream == NULL) {
+        stream = fopen(filename, "a");
+    }
+    return stream;
 }
 
-void log_message(FILE *stream, LogLevel level, const char* format, ...) {
+void log_message(LogLevel level, const char* format, ...) {
     if (!stream) {
         return;
     }
@@ -31,6 +38,6 @@ void log_message(FILE *stream, LogLevel level, const char* format, ...) {
     fflush(stream);
 }
 
-void close_logger(FILE *stream) {
+void close_logger() {
     fclose(stream);
 }

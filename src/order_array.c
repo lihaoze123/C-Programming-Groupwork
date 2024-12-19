@@ -2,27 +2,31 @@
 
 Order_array* create_order_array(size_t size) {
     Order_array* res = (Order_array*) malloc(sizeof(Order_array));
+    if (res == NULL) {
+        log_message(LOG_ERROR, "无法分配 Order_array 内存");
+        return NULL;
+    }
 
     res->orders = (Order*) malloc(size * sizeof(Order));
-    res->size = size;
-
-    if (res == NULL || res->orders == NULL) {
-        printf("申请内存失败\n");
+    if (res->orders == NULL) {
+        log_message(LOG_ERROR, "无法分配 orders 数组内存");
         free(res);
         return NULL;
     }
 
+    res->size = size;
     return res;
 }
 
 int reserve_capacity(Order_array *array, size_t new_size) {
     if (new_size < array->size) {
+        log_message(LOG_ERROR, "new_size 小于当前 size");
         return 0;
     }
 
     Order* new_ptr = (Order*) realloc(array->orders, new_size * sizeof(Order)); 
     if (new_ptr == NULL) {
-        free(new_ptr);
+        log_message(LOG_ERROR, "无法分配内存");
         return 0;
     }
 
@@ -34,6 +38,7 @@ int reserve_capacity(Order_array *array, size_t new_size) {
 
 int add_order(Order_array *array, const Order* order) {
     if(!reserve_capacity(array, array->size + 1)) {
+        log_message(LOG_ERROR, "无法添加订单");
         return 0;
     }
 
@@ -43,6 +48,7 @@ int add_order(Order_array *array, const Order* order) {
 
 Order* at(Order_array *array, size_t index) {
     if (index > array->size) {
+        log_message(LOG_ERROR, "index 大于 size");
         return NULL;
     }
     return &array->orders[index];
@@ -65,16 +71,22 @@ int print_orders(const Order_array *array) {
 
 int remove_order(Order_array *array, const char* id) {
     if (array->size == 0) {
+        log_message(LOG_ERROR, "size 为 0");
         return 0;
     }
 
     Order* find = get_order_by_id(array, id);
     if (find == NULL) {
+        log_message(LOG_ERROR, "找不到订单");
         return 0;
     }
 
     size_t pos = find - array->orders;
     Order* new_ptr = (Order*) malloc((array->size - 1) * sizeof(Order));
+    if (new_ptr == NULL) {
+        log_message(LOG_ERROR, "无法分配内存");
+        return 0;
+    }
 
     for (int i = 0, j = 0; i < array->size; ++ i) {
         if (i == pos) 
@@ -91,11 +103,21 @@ int remove_order(Order_array *array, const char* id) {
 }
 
 void free_order_array(Order_array *array) {
+    if (array == NULL) {
+        log_message(LOG_ERROR, "array 为 NULL");
+        return;
+    }
+
     free(array->orders);
     free(array);
 }
 
 int is_sorted(void* arr, size_t nmemb, size_t size, int (*comp)(const void*, const void*)) {
+    if (arr == NULL) {
+        log_message(LOG_ERROR, "arr 为 NULL");
+        return 0;
+    }
+
     for (int i = 0; i < nmemb - 1; ++ i) {
         void* current = (char*) arr + i * size;
         void* next = (char*) arr + (i + 1) * size;
@@ -109,6 +131,11 @@ int is_sorted(void* arr, size_t nmemb, size_t size, int (*comp)(const void*, con
 }
 
 void sort_orders(Order_array *array, int (*comp)(const void*, const void*)) {
+    if (array == NULL) {
+        log_message(LOG_ERROR, "array 为 NULL");
+        return;
+    }
+
     if (is_sorted(array->orders, array->size, sizeof(Order), comp)) {
         return;
     }
@@ -129,6 +156,11 @@ DEF_COMP_BY_STR(description);
 DEF_COMP_BY_STR(status);
 
 int comp_by_weight(const void* lhs, const void* rhs) {
+    if (lhs == NULL || rhs == NULL) {
+        log_message(LOG_ERROR, "lhs 或 rhs 为 NULL");
+        return 0;
+    }
+
     double arg1 = *(const double*)(lhs);
     double arg2 = *(const double*)(rhs);
 
@@ -140,6 +172,11 @@ int comp_by_weight(const void* lhs, const void* rhs) {
 
 #define DEF_GET_ORDER_BY_STR(__PROPERTY) \
 Order* get_order_by_##__PROPERTY(Order_array *array, const char *value) { \
+    if (array == NULL) { \
+        log_message(LOG_ERROR, "array 为 NULL"); \
+        return NULL; \
+    } \
+\
     sort_orders(array, comp_by_##__PROPERTY); \
     size_t lo = 0, hi = array->size - 1; \
     while (lo < hi) { \
@@ -153,7 +190,7 @@ Order* get_order_by_##__PROPERTY(Order_array *array, const char *value) { \
     if (strcmp(at(array, lo)->__PROPERTY, value) == 0) { \
         return at(array, lo); \
     } else { \
-        log_message(stderr, LOG_ERROR, "不存在的%s: %s", #__PROPERTY, value); \
+        log_message(LOG_ERROR, "不存在的%s: %s", #__PROPERTY, value); \
         return NULL; \
     } \
 }
@@ -163,11 +200,17 @@ DEF_GET_ORDER_BY_STR(sender);
 DEF_GET_ORDER_BY_STR(receiver);
 
 Order* fuzzy_search_order(Order_array *array, const char *keyword) {
+    if (array == NULL) {
+        log_message(LOG_ERROR, "array 为 NULL");
+        return NULL;
+    }
+
     Order* min = at(array, 0);
     int min_dist = 1e9;
 
     for (int i = 0; i < array->size; ++ i) {
-        char* str = (char*) malloc(512 * sizeof(char));
+        char* str = (char*) calloc(512, sizeof(char));
+        str[0] = '\0';
         strcat(str, at(array, i)->id);
         strcat(str, at(array, i)->sender);
         strcat(str, at(array, i)->receiver);
