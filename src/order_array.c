@@ -167,12 +167,14 @@ Order* fuzzy_search_order(Order_array *array, const char *keyword) {
     int min_dist = 1e9;
 
     for (int i = 0; i < array->size; ++ i) {
-        char* str = strcat(at(array, i)->id, at(array, i)->sender);
-        str = strcat(str, at(array, i)->receiver);
-        str = strcat(str, at(array, i)->sender_addr);
-        str = strcat(str, at(array, i)->receiver_addr);
-        str = strcat(str, at(array, i)->description);
-        str = strcat(str, at(array, i)->status);
+        char* str = (char*) malloc(512 * sizeof(char));
+        strcat(str, at(array, i)->id);
+        strcat(str, at(array, i)->sender);
+        strcat(str, at(array, i)->receiver);
+        strcat(str, at(array, i)->sender_addr);
+        strcat(str, at(array, i)->receiver_addr);
+        strcat(str, at(array, i)->description);
+        strcat(str, at(array, i)->status);
     
         if (edit_distance(str, keyword) < min_dist) {
             min_dist = edit_distance(str, keyword);
