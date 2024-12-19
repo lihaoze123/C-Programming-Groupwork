@@ -99,23 +99,24 @@ int edit_distance(const char* s1, const char* s2) {
         return -1;
     }
     
-    int n = strlen(s1);
-    int m = strlen(s2);
+    size_t n = strlen(s1);
+    size_t m = strlen(s2);
     
-    if (m == 0) return 0;
-    if (n < m) return m;
+    if (n < m) {
+        return edit_distance(s2, s1);
+    }
     
     int min_dist = m;
-    for (int st = 0; st <= n - m; st++) {
+    for (size_t st = 0; st <= n - m; st++) {
         int dp[m + 1][m + 1];
         
-        for (int i = 0; i <= m; i++) {
+        for (size_t i = 0; i <= m; i++) {
             dp[i][0] = i;
             dp[0][i] = i;
         }
         
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= m; j++) {
+        for (size_t i = 1; i <= m; i++) {
+            for (size_t j = 1; j <= m; j++) {
                 if (s1[st + i - 1] == s2[j - 1]) {
                     dp[i][j] = dp[i - 1][j - 1];
                 } else {

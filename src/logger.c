@@ -10,9 +10,9 @@ static const char* level_str[] = {
 };
 
 FILE* init_logger(const char *filename) {
-    if (filename == NULL) {
+    if (filename == NULL || strcmp(filename, "") == 0) {
         stream = stderr;
-    } else if (stream == NULL) {
+    } else {
         stream = fopen(filename, "a");
     }
     return stream;

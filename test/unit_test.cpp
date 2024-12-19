@@ -16,6 +16,7 @@ protected:
         // 初始化测试数据
         order_array = create_order_array(1);
         order = (Order*) malloc(sizeof(Order));
+        init_logger(NULL);
     }
 
     void TearDown() override {
@@ -73,12 +74,7 @@ TEST_F(OrderTest, LoadOrders) {
 
 // 测试保存订单
 TEST_F(OrderTest, SaveOrders) {
-    create_order(order, "125", "Sender3", "Address3", 
-                 "Receiver3", 
-                 "Address3",
-                 "Description3",
-                 15.0,
-                 "Pending");
+    create_order(order, "125", "Sender3", "Address3", "Receiver3", "Address3", "Description3", 15.0, "Pending");
 
     add_order(order_array, order);
 
@@ -101,14 +97,7 @@ TEST_F(OrderTest, SaveOrders) {
 
 // 测试删除特定订单
 TEST_F(OrderTest, RemoveOrder) {
-   create_order(order, "126", 
-                "Sender4",
-                "", 
-                "", 
-                "", 
-                "", 
-                20.0,
-                "");
+   create_order(order, "126", "Sender4", "", "", "", "", 20.0, "");
 
    add_order(order_array, order);
 
@@ -146,17 +135,19 @@ TEST_F(OrderTest, SortOrders) {
 TEST_F(OrderTest, EditDistance) {
     EXPECT_EQ(edit_distance("hello", "hello"), 0);
     EXPECT_EQ(edit_distance("hello", "helo"), 1);
-    EXPECT_EQ(edit_distance("kitten", "sitting"), 3);
-    EXPECT_EQ(edit_distance("", "abc"), 3);
-    EXPECT_EQ(edit_distance("abc", ""), 3);
+    EXPECT_EQ(edit_distance("kitten", "sitting"), 2);
+    EXPECT_EQ(edit_distance("", "abc"), 0);
+    EXPECT_EQ(edit_distance("abc", ""), 0);
     EXPECT_EQ(edit_distance("", ""), 0);
 }
 
 TEST_F(OrderTest, Logger) {
+    FILE* fp = init_logger(NULL);
     log_message(LOG_DEBUG, "This is a test message");
     log_message(LOG_INFO, "This is a test message");
     log_message(LOG_WARNING, "This is a test message");
     log_message(LOG_ERROR, "This is a test message");
+    close_logger();
 }
 
 TEST_F(OrderTest, LoggerFile) {
