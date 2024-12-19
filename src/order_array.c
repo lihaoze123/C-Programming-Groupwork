@@ -58,6 +58,8 @@ int fprint_orders(const Order_array *array, FILE *stream) {
     if (array == NULL)
         return 0;
 
+    sort_orders(array, comp_by_id);
+
     for (int i = 0; i < array->size; ++ i) {
         fprint_order(at((Order_array*)array, i), stream);
         fprintf(stream, "\n");
