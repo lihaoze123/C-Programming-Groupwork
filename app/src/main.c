@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
 
     Order_array* order_array = load_orders("orders.txt");
     if (order_array == NULL) {
-        order_array = create_order_array(1);
+        order_array = create_order_array(0);
     }
 
     init_operation(order_array);

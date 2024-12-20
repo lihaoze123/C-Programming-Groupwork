@@ -6,17 +6,6 @@ set(CMAKE_CXX_STANDARD 23)
 
 include_directories(include/)
 
-add_library(OrderLib STATIC
-    src/order_array.c
-    src/order_struct.c
-    src/tools.c
-)
-
-target_link_directories(OrderLib
-    PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
-)
-
 add_library(LoggerLib STATIC
     src/logger.c
 )
@@ -35,6 +24,21 @@ target_link_directories(ArrayLib
     ${PROJECT_SOURCE_DIR}/include
 )
 
+add_library(OrderLib STATIC
+    src/order_array.c
+    src/order_struct.c
+    src/tools.c
+)
+
+target_link_directories(OrderLib
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
+)
+
+target_link_libraries(OrderLib
+    LoggerLib
+    ArrayLib
+)
 
 add_subdirectory(app)
 

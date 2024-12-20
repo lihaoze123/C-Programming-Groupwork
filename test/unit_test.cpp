@@ -12,7 +12,7 @@ class OrderTest : public ::testing::Test {
 protected:
     void SetUp() override {
         // 初始化测试数据
-        order_array = create_order_array(1);
+        order_array = create_order_array(0);
         order = (Order*) malloc(sizeof(Order));
         init_logger(NULL);
     }
@@ -45,15 +45,7 @@ TEST_F(OrderTest, PrintOrders) {
 TEST_F(OrderTest, LoadOrders) {
     FILE* fp = fopen("test_orders.txt", "w");
     
-    fprintf(fp , "%s %s %s %s %s %s %lf %s\n", 
-            "124",
-            "Sender2",
-            "Address2",
-            "Receiver2",
-            "Address2",
-            "Description2",
-            10.0,
-            "Pending");
+    fprintf(fp , "%s %s %s %s %s %s %lf %s\n", "124", "Sender2", "Address2", "Receiver2", "Address2", "Description2", 10.0, "Pending");
     
     fclose(fp);
 
@@ -61,7 +53,7 @@ TEST_F(OrderTest, LoadOrders) {
     
     EXPECT_EQ(order_array->size, 1);
 
-    Order* loaded_order = at(order_array, 0);
+    Order* loaded_order = order_at(order_array, 0);
     
     EXPECT_STREQ(loaded_order->id, "124");
 
@@ -112,10 +104,10 @@ TEST_F(OrderTest, IsSortedOrders) {
    create_order(order,"127","Sender5","Address5","Receiver5","Address5","Description5",25.0,"Pending");
    add_order(order_array ,order);
 
-   EXPECT_FALSE(is_sorted(order_array->orders, order_array->size, sizeof(Order), comp_by_id));
+   EXPECT_FALSE(is_sorted(order_array->data, order_array->size, sizeof(Order), comp_by_id));
 
-   std::swap(order_array->orders[0], order_array->orders[1]);
-   EXPECT_TRUE(is_sorted(order_array->orders, order_array->size, sizeof(Order), comp_by_id));
+   std::swap(*((Order*)(order_array->data) + 0), *((Order*)(order_array->data) + 1));
+   EXPECT_TRUE(is_sorted(order_array->data, order_array->size, sizeof(Order), comp_by_id));
 }
 
 TEST_F(OrderTest, SortOrders) {
@@ -126,7 +118,7 @@ TEST_F(OrderTest, SortOrders) {
    add_order(order_array ,order);
 
    sort_orders (order_array ,comp_by_id );
-   EXPECT_STREQ(at (order_array ,0)->id ,"127"); // 检查排序是否正确
+   EXPECT_STREQ(order_at(order_array ,0)->id ,"127"); // 检查排序是否正确
 }
 
 TEST_F(OrderTest, EditDistance) {
@@ -195,11 +187,11 @@ TEST_F(OrderTest, FuzzySearchOrder) {
     add_order(order_array, order);
 
     Order* find = fuzzy_search_order(order_array, "Sender8");
-    EXPECT_EQ(strcmp(find->id, at(order_array, 0)->id) == 0, true);
+    EXPECT_EQ(strcmp(find->id, order_at(order_array, 0)->id) == 0, true);
 
     find = fuzzy_search_order(order_array, "Desc8");
-    EXPECT_EQ(strcmp(find->id, at(order_array, 0)->id) == 0, true);
+    EXPECT_EQ(strcmp(find->id, order_at(order_array, 0)->id) == 0, true);
 
     find = fuzzy_search_order(order_array, "9");
-    EXPECT_EQ(strcmp(find->id, at(order_array, 1)->id) == 0, true);
+    EXPECT_EQ(strcmp(find->id, order_at(order_array, 1)->id) == 0, true);
 }

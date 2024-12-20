@@ -4,21 +4,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <logger.h>
+#include <array.h>
+
 #include "order_struct.h"
-#include "logger.h"
 
-typedef struct Order_array {
-    Order* orders;
-    size_t size, capacity;
-} Order_array;
+typedef Array Order_array;
 
-Order_array* create_order_array(size_t capacity);
-int reserve_capacity(Order_array *array, size_t new_capacity);
-int add_order(Order_array *array, const Order* order);
+static inline Order_array* create_order_array(size_t size) {
+    return create_array(size, sizeof(Order));
+}
+
+static inline int reserve_capacity(Order_array *array, size_t new_capacity) {
+    return reserve_array(array, new_capacity);
+}
+
+static inline int add_order(Order_array *array, const Order* order) {
+    return add_element(array, (void*) order);
+}
+
+static inline Order* order_at(Order_array *array, size_t index) {
+    return (Order*) at(array, index);
+}
+
+static inline void free_order_array(Order_array *array) {
+    free_array(array);
+}
+
 int remove_order(Order_array *array, const char* id);
-void free_order_array(Order_array *array);
-
-Order* at(Order_array *array, size_t index);
 
 #include "tools.h"
 Order* fuzzy_search_order(Order_array *array, const char *keyword);
@@ -30,8 +44,8 @@ DEC_GET_ORDER_BY_STR(id);
 DEC_GET_ORDER_BY_STR(sender);
 DEC_GET_ORDER_BY_STR(receiver);
 
-int fprint_orders(const Order_array *array, FILE *stream);
-int print_orders(const Order_array *array);
+int fprint_orders(Order_array *array, FILE *stream);
+int print_orders(Order_array *array);
 
 #define DEC_COMP_BY_STR(__PROPERTY) \
 int comp_by_##__PROPERTY(const void* lhs, const void* rhs);
@@ -46,7 +60,6 @@ DEC_COMP_BY_STR(status);
 
 int comp_by_weight(const void* lhs, const void* rhs);
 
-int is_sorted(void* arr, size_t nmemb, size_t size, int (*comp)(const void*, const void*));
 void sort_orders(Order_array *array, int (*comp)(const void*, const void*));
 
 

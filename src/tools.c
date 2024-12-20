@@ -65,7 +65,7 @@ Order_array* load_orders(const char *filename) {
         return NULL;
     }
 
-    Order_array* array = create_order_array(1);
+    Order_array* array = create_order_array(0);
 
     Order tmp;
     while (get_file_order(&tmp, fp)) {
@@ -148,4 +148,22 @@ int edit_distance(const char* s1, const char* s2) {
     }
     
     return min_dist;
+}
+
+int is_sorted(void* arr, size_t nmemb, size_t size, int (*comp)(const void*, const void*)) {
+    if (arr == NULL) {
+        log_message(LOG_ERROR, "arr 为 NULL");
+        return 0;
+    }
+
+    for (int i = 0; i < nmemb - 1; ++ i) {
+        void* current = (char*) arr + i * size;
+        void* next = (char*) arr + (i + 1) * size;
+
+        if (comp(current, next) > 0) {
+            return 0;
+        }
+    }
+
+    return 1;
 }

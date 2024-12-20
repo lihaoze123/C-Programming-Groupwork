@@ -21,4 +21,6 @@ int save_orders(Order_array *array, const char *filename);
 
 int edit_distance(const char* s1, const char* s2);
 
+int is_sorted(void* arr, size_t nmemb, size_t size, int (*comp)(const void*, const void*));
+
 #endif // TOOLS_H

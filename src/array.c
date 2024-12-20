@@ -13,7 +13,7 @@ Array* create_array(size_t size, size_t element_size) {
     }
 
     array->data = malloc(size * element_size);
-    if (array->data == NULL) {
+    if (array->data == NULL && size > 0) {
         log_message(LOG_ERROR, "无法分配内存");
         free(array);
         return NULL;
@@ -21,6 +21,8 @@ Array* create_array(size_t size, size_t element_size) {
 
     array->size = size;
     array->element_size = element_size;
+    array->capacity = 0;
+
     reserve_array(array, size);
 
     return array;
@@ -28,7 +30,7 @@ Array* create_array(size_t size, size_t element_size) {
 
 int reserve_array(Array* array, size_t new_capacity) {
     if (new_capacity < array->capacity) {
-        log_message(LOG_INFO, "new_capacity 小于当前 capacity");
+        log_message(LOG_INFO, "已经预留了足够的空间 %zu < %zu", new_capacity, array->capacity);
         return 1;
     }
 
