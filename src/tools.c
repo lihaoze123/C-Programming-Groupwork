@@ -122,7 +122,10 @@ int edit_distance(const char* s1, const char* s2) {
     
     int min_dist = m;
     for (size_t st = 0; st <= n - m; st++) {
-        int dp[m + 1][m + 1];
+        int** dp = (int**) malloc((m + 1) * sizeof(int*));
+        for (size_t i = 0; i <= m; i++) {
+            dp[i] = (int*) malloc((m + 1) * sizeof(int));
+        }
         
         for (size_t i = 0; i <= m; i++) {
             dp[i][0] = i;
