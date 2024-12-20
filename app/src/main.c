@@ -3,6 +3,8 @@
 #include <string.h>
 
 #include <order.h>
+#include <logger.h>
+
 #include "menu.h"
 #include "operation.h"
 

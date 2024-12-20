@@ -4,6 +4,7 @@
 #include <cstring>
 extern "C" {
     #include <order.h>
+    #include <logger.h>
 }
 
 // 测试环境设置
@@ -56,8 +57,7 @@ TEST_F(OrderTest, LoadOrders) {
     
     fclose(fp);
 
-    ASSERT_TRUE(load_orders("test_orders.txt") != NULL);
-    std::cerr << 1 << '\n';
+    ASSERT_TRUE((order_array = load_orders("test_orders.txt")) != NULL);
     
     EXPECT_EQ(order_array->size, 1);
 
