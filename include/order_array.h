@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "order.h"
+#include "order_struct.h"
 #include "logger.h"
 
 typedef struct Order_array {

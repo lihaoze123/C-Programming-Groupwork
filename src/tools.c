@@ -20,6 +20,15 @@ int read_line(char* s, size_t size, FILE *stream) {
     return 1;
 }
 
+int clear_line(FILE *stream) {
+    if (stream == NULL)
+        return 0;
+
+    while (fgetc(stream) != '\n');
+
+    return 1;
+}
+
 int parse_order_line(const char* line, Order* order) {
     return ~sscanf(line, "%s %s %s %s %s %s %lf %s", 
            order->id,
@@ -48,24 +57,29 @@ int get_input_order(Order *order) {
     return get_file_order(order, stdin);
 }
 
-int load_orders(Order_array *array, const char *filename) {
+Order_array* load_orders(const char *filename) {
     FILE *fp = fopen(filename, "r");
 
     if (fp == NULL) {
-        return 0;
+        log_message(LOG_ERROR, "加载 %s 失败", filename);
+        return NULL;
     }
+
+    Order_array* array = create_order_array(1);
 
     Order tmp;
     while (get_file_order(&tmp, fp)) {
         if (!add_order(array, &tmp)) {
+            log_message(LOG_ERROR, "添加订单失败");
             fclose(fp);
-            return 0;
+            return NULL;
         }
     }
 
     fclose(fp);
 
-    return 1;
+    log_message(LOG_INFO, "加载 %s 成功", filename);
+    return array;
 }
 
 int save_orders(Order_array *array, const char *filename) {

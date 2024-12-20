@@ -1,13 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <operation.h>
 
-#include "order.h"
-#include "order_array.h"
-#include "tools.h"
-#include "logger.h"
+static Order_array* order_array = NULL;
 
-Order_array* order_array = NULL;
+void init_operation(Order_array* orders) {
+    order_array = orders;
+}
 
 void save() {
     log_message(LOG_INFO, "保存订单");
@@ -221,53 +218,4 @@ void query() {
             printf("无效的选项\n");
             break;
     }
-}
-
-typedef void (*Operation)();
-
-typedef struct MenuOption {
-    int code;
-    const char* description;
-    Operation operation;
-} MenuOption;
-
-
-const MenuOption MENU_OPTIONS[] = {
-    {0, "退出系统", exit_system},
-    {1, "添加订单", add},
-    {2, "删除订单", delete},
-    {3, "修改订单", modify},
-    {4, "查询订单", query},
-    {5, "打印所有订单", print},
-    {6, "保存订单", save},
-};
-
-const size_t MENU_OPTIONS_COUNT = sizeof(MENU_OPTIONS) / sizeof(MENU_OPTIONS[0]);
-
-void print_menu() {
-    printf("\n=== 订单管理系统 ===\n");
-    for (size_t i = 0; i < MENU_OPTIONS_COUNT; i++) {
-        printf("%d. %s\n", MENU_OPTIONS[i].code, MENU_OPTIONS[i].description);
-    }
-    printf("请选择操作：");
-}
-
-int main(int argc, char* argv[]) {
-    init_logger("order_system.log");
-
-    order_array = create_order_array(1);
-    load_orders(order_array, "orders.txt");
-
-    while (1) {
-        print_menu();
-        int op;
-        scanf("%d", &op);
-        log_message(LOG_INFO, "选择操作: %d", op);
-
-        while (getchar() != '\n');
-
-        MENU_OPTIONS[op].operation();
-    }
-
-    return 0;
 }

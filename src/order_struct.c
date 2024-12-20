@@ -1,4 +1,4 @@
-#include "order.h"
+#include "order_struct.h"
 
 void create_order(Order* order, const char* id, const char* sender, const char* sender_addr, const char* receiver, const char* receiver_addr, const char* description, double weight, const char* status) {
     strcpy(order->id, id);
