@@ -30,16 +30,28 @@ int clear_line(FILE *stream) {
 }
 
 int parse_order_line(const char* line, Order* order) {
-    return ~sscanf(line, "%s %s %s %s %s %s %lf %s", 
-           order->id,
-           order->sender,
-           order->sender_addr,
-           order->receiver,
-           order->receiver_addr,
-           order->description,
-           &order->weight,
-           order->status
+    char id[256];
+    char sender[256];
+    char sender_addr[256];
+    char receiver[256];
+    char receiver_addr[256];
+    char description[256];
+    char status[256];
+    double weight;
+
+    int res = ~sscanf(line, "%s %s %s %s %s %s %lf %s", 
+           id,
+           sender,
+           sender_addr,
+           receiver,
+           receiver_addr,
+           description,
+           &weight,
+           status
            );
+
+    create_order(order, id, sender, sender_addr, receiver, receiver_addr, description, weight, status);
+    return res;
 }
 
 int get_file_order(Order *order, FILE *stream) {

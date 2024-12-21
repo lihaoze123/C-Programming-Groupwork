@@ -20,7 +20,7 @@ void reset_text_color() {
     set_text_color(COLOR_ORIGINAL);
 }
 
-int cprint(color_t color, const char* format, ...) {
+int cprintf(color_t color, const char* format, ...) {
     va_list args;
     va_start(args, format);
     

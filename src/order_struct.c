@@ -1,13 +1,13 @@
 #include "order_struct.h"
 
 void create_order(Order* order, const char* id, const char* sender, const char* sender_addr, const char* receiver, const char* receiver_addr, const char* description, double weight, const char* status) {
-    strcpy(order->id, id);
-    strcpy(order->sender, sender);
-    strcpy(order->sender_addr, sender_addr);
-    strcpy(order->receiver, receiver);
-    strcpy(order->receiver_addr, receiver_addr);
-    strcpy(order->description, description);
-    strcpy(order->status, status);
+    order->id = strdup(id);
+    order->sender = strdup(sender);
+    order->sender_addr = strdup(sender_addr);
+    order->receiver = strdup(receiver);
+    order->receiver_addr = strdup(receiver_addr);
+    order->description = strdup(description);
+    order->status = strdup(status);
     order->weight = weight;
 }
 

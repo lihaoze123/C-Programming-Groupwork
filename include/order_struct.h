@@ -6,14 +6,14 @@
 #include <string.h>
 
 typedef struct Order {
-    char id[256];
-    char sender[256];
-    char sender_addr[256];
-    char receiver[256];
-    char receiver_addr[256];
-    char description[256];
+    char* id;
+    char* sender;
+    char* sender_addr;
+    char* receiver;
+    char* receiver_addr;
+    char* description;
     double weight;
-    char status[256];
+    char* status;
 } Order;
 
 void create_order(Order* order, const char* id, const char* sender, const char* sender_addr, const char* receiver, const char* receiver_addr, const char* description, double weight, const char* status);

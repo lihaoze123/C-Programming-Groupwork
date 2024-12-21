@@ -9,12 +9,17 @@ const MenuOption MENU_OPTIONS[] = {
     {4, "查询订单", query},
     {5, "打印所有订单", print},
     {6, "保存订单", save},
+    {7, "排序订单", sort},
+    {8, "订单统计", statistics},
+    {9, "导出CSV", export_csv},
+    {10, "导入CSV", import_csv},
+    {11, "帮助", help}
 };
 
 const size_t MENU_OPTIONS_COUNT = sizeof(MENU_OPTIONS) / sizeof(MenuOption);
 
 void print_menu() {
-    cprint(COLOR_BLUE, "\n=== 订单管理系统 ===\n");
+    cprintf(COLOR_BLUE, "\n=== 订单管理系统 ===\n");
     
     for (size_t i = 0; i < MENU_OPTIONS_COUNT; i++) {
         WORD color;
@@ -36,10 +41,10 @@ void print_menu() {
                 break;
         }
         
-        cprint(color, "%d: %s\n", MENU_OPTIONS[i].code, MENU_OPTIONS[i].description);
+        cprintf(color, "%d: %s\n", MENU_OPTIONS[i].code, MENU_OPTIONS[i].description);
     }
     
-    cprint(COLOR_WHITE, "请输入要进行的操作: ");
+    cprintf(COLOR_WHITE, "请输入要进行的操作: ");
 }
 
 int get_menu_option() {
@@ -48,7 +53,7 @@ int get_menu_option() {
     clear_line(stdin);
 
     if (option < 0 || option >= MENU_OPTIONS_COUNT) {
-        cprint(COLOR_RED, "无效操作\n");
+        cprintf(COLOR_RED, "无效操作\n");
         return -1;
     }
 

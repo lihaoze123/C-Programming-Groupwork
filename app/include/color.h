@@ -31,6 +31,6 @@ void init_console();
 void set_text_color(color_t color);
 void reset_text_color();
 
-int cprint(color_t color, const char* format, ...);
+int cprintf(color_t color, const char* format, ...);
 
 #endif // COLOR_H 
