@@ -13,7 +13,9 @@
 
 int main(int argc, char* argv[]) {
     init_console();
+    
     init_logger(NULL);
+    set_log_level(LOG_WARNING);
 
     ArgumentParser* parser = create_argument_parser();
     if (parser == NULL) {
@@ -22,6 +24,7 @@ int main(int argc, char* argv[]) {
     }
 
     add_argument(parser, "c", "配置文件", 0);
+    add_argument(parser, "l", "日志级别", 0);
     parse_arguments(parser, argc, argv);
 
     const char* config_file = get_argument_value(parser, "c");
@@ -48,7 +51,6 @@ int main(int argc, char* argv[]) {
         }
     #endif
 
-    // 如果配置文件路径是相对路径,转换为绝对路径
     if (config_file[0] != '/' && !(config_file[0] && config_file[1] == ':')) {
         char abs_path[1024];
         #ifdef _WIN32
@@ -79,7 +81,23 @@ int main(int argc, char* argv[]) {
         save_config(config);
     }
 
+    const char* log_level = get_argument_value(parser, "l");
+    if (log_level == NULL) {
+        log_level = "DEBUG";
+    }
+
     init_logger(log_file);
+    if (strcmp(log_level, "DEBUG") == 0) {
+        set_log_level(LOG_DEBUG);
+    } else if (strcmp(log_level, "INFO") == 0) {
+        set_log_level(LOG_INFO);
+    } else if (strcmp(log_level, "WARNING") == 0) {
+        set_log_level(LOG_WARNING);
+    } else if (strcmp(log_level, "ERROR") == 0) {
+        set_log_level(LOG_ERROR);
+    } else {
+        set_log_level(LOG_DEBUG);
+    }
 
     const char* order_file = get_config_value(config, "System", "order_file");
     if (order_file == NULL) {

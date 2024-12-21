@@ -1,6 +1,7 @@
 #include "logger.h"
 
 static FILE* stream = NULL;
+static LogLevel current_log_level = LOG_DEBUG;
 
 static const char* level_str[] = {
     "DEBUG",
@@ -18,8 +19,16 @@ FILE* init_logger(const char *filename) {
     return stream;
 }
 
+void set_log_level(LogLevel level) {
+    current_log_level = level;
+}
+
 void log_message(LogLevel level, const char* format, ...) {
     if (!stream) {
+        return;
+    }
+
+    if (level < current_log_level) {
         return;
     }
 

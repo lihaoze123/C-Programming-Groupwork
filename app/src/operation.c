@@ -8,14 +8,6 @@ static Config* config = NULL;
 void init_operation(Order_array* orders, Config* cfg) {
     order_array = orders;
     config = cfg;
-    if (config == NULL) {
-        log_message(LOG_ERROR, "无法创建配置管理器");
-        return;
-    }
-
-    if (load_config(config) != 0) {
-        log_message(LOG_WARNING, "无法加载配置文件，将使用默认配置");
-    }
 }
 
 void save() {

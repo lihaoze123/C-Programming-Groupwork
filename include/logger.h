@@ -12,6 +12,8 @@ typedef enum {
     LOG_ERROR
 } LogLevel;
 
+void set_log_level(LogLevel level);
+
 FILE* init_logger(const char *filename);
 
 void log_message(LogLevel level, const char* format, ...);
