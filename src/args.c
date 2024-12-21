@@ -28,14 +28,14 @@ ArgumentParser* create_argument_parser() {
 
 int add_argument(ArgumentParser* parser, const char* name, const char* description, int required) {
     if (!parser || !name || !description) {
-        log_message(LOG_ERROR, "参数错误");
+        log_message(LOG_ERROR, "添加参数失败：无效的参数");
         return 0;
     }
 
-    for (size_t i = 0; i < parser->arguments->size; ++i) {
+    for (size_t i = 0; i < parser->arguments->size; ++ i) {
         Argument* arg = (Argument*)at(parser->arguments, i);
         if (strcmp(arg->name, name) == 0) {
-            log_message(LOG_WARNING, "参数 '%s' 已存在", name);
+            log_message(LOG_WARNING, "添加参数失败：参数已存在 [参数名:%s]", name);
             return 0;
         }
     }
@@ -47,21 +47,23 @@ int add_argument(ArgumentParser* parser, const char* name, const char* descripti
     arg.value = NULL;
 
     if (!add_element(parser->arguments, &arg)) {
-        log_message(LOG_ERROR, "添加参数失败 '%s'", name);
+        log_message(LOG_ERROR, "添加参数失败：内存分配失败 [参数名:%s]", name);
         free(arg.name);
         free(arg.description);
         return 0;
     }
 
-    log_message(LOG_INFO, "添加参数成功 '%s' (required: %d)", name, required);
+    log_message(LOG_INFO, "成功添加参数 [参数名:%s, 描述:%s, 必需:%d]", name, description, required);
     return 1;
 }
 
 int parse_arguments(ArgumentParser* parser, int argc, char* argv[]) {
     if (!parser || argc < 1 || !argv) {
-        log_message(LOG_ERROR, "参数错误");
+        log_message(LOG_ERROR, "解析参数失败：无效的参数");
         return 0;
     }
+
+    log_message(LOG_INFO, "开始解析命令行参数 [参数数量:%d]", argc - 1);
 
     while (parser->parsed_arguments->size > 0) {
         remove_element(parser->parsed_arguments, parser->parsed_arguments->size - 1);
@@ -91,16 +93,17 @@ int parse_arguments(ArgumentParser* parser, int argc, char* argv[]) {
                 parsed_arg.required = def->required;
 
                 if (!add_element(parser->parsed_arguments, &parsed_arg)) {
-                    log_message(LOG_ERROR, "添加解析后参数失败 '%s'", name);
+                    log_message(LOG_ERROR, "解析参数失败：添加解析后参数失败 [参数名:%s]", name);
                     return 0;
                 }
+                log_message(LOG_DEBUG, "成功解析参数 [参数名:%s, 值:%s]", name, value ? value : "NULL");
                 found = 1;
                 break;
             }
         }
 
         if (!found) {
-            log_message(LOG_WARNING, "未知参数 '%s'", name);
+            log_message(LOG_WARNING, "解析参数：未知参数 [参数名:%s]", name);
         }
     }
 
@@ -116,30 +119,31 @@ int parse_arguments(ArgumentParser* parser, int argc, char* argv[]) {
                 }
             }
             if (!found) {
-                log_message(LOG_ERROR, "必需参数 '%s' 未提供", def->name);
+                log_message(LOG_ERROR, "解析参数失败：缺少必需参数 [参数名:%s]", def->name);
                 return 0;
             }
         }
     }
 
-    log_message(LOG_INFO, "成功解析 %zu 个参数", parser->parsed_arguments->size);
+    log_message(LOG_INFO, "命令行参数解析完成 [成功解析:%zu个]", parser->parsed_arguments->size);
     return 1;
 }
 
 const char* get_argument_value(ArgumentParser* parser, const char* name) {
     if (!parser || !name) {
-        log_message(LOG_ERROR, "参数错误");
+        log_message(LOG_ERROR, "获取参数值失败：无效的参数");
         return NULL;
     }
 
     for (size_t i = 0; i < parser->parsed_arguments->size; ++ i) {
         Argument* arg = (Argument*)at(parser->parsed_arguments, i);
         if (strcmp(arg->name, name) == 0) {
+            log_message(LOG_DEBUG, "获取参数值 [参数名:%s, 值:%s]", name, arg->value ? arg->value : "NULL");
             return arg->value;
         }
     }
 
-    log_message(LOG_DEBUG, "参数 '%s' 未找到", name);
+    log_message(LOG_DEBUG, "获取参数值：参数未找到 [参数名:%s]", name);
     return NULL;
 }
 

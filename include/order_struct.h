@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <logger.h>
+
 typedef struct Order {
     char* id;
     char* sender;
