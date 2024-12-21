@@ -10,8 +10,16 @@ add_library(LoggerLib STATIC
     src/logger.c
 )
 
+add_library(ConfigLib STATIC
+    src/config.c
+)
+
 add_library(ArrayLib STATIC
     src/array.c
+)
+
+add_library(ArgsLib STATIC
+    src/args.c
 )
 
 target_link_directories(LoggerLib
@@ -19,9 +27,24 @@ target_link_directories(LoggerLib
     ${PROJECT_SOURCE_DIR}/include
 )
 
+target_link_directories(ConfigLib
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
+)
+
 target_link_directories(ArrayLib
     PUBLIC
     ${PROJECT_SOURCE_DIR}/include
+)
+
+target_link_directories(ArgsLib
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
+)
+
+target_link_libraries(ArgsLib
+    ArrayLib
+    LoggerLib
 )
 
 add_library(OrderLib STATIC
