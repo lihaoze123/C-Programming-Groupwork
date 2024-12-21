@@ -1,0 +1,22 @@
+#ifndef COLOR_H
+#define COLOR_H
+
+#include <windows.h>
+#include <stdio.h>
+#include <stdarg.h>
+
+#define COLOR_ORIGINAL (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)
+#define COLOR_RED     (FOREGROUND_RED | FOREGROUND_INTENSITY)
+#define COLOR_GREEN   (FOREGROUND_GREEN | FOREGROUND_INTENSITY)
+#define COLOR_BLUE    (FOREGROUND_BLUE | FOREGROUND_INTENSITY)
+#define COLOR_YELLOW  (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY)
+#define COLOR_CYAN    (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY)
+#define COLOR_WHITE   (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY)
+
+void init_console();
+void set_text_color(WORD color);
+void reset_text_color();
+
+int cprint(WORD color, const char* format, ...);
+
+#endif // COLOR_H 

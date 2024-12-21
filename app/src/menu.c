@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "color.h"
 
 const MenuOption MENU_OPTIONS[] = {
     {0, "退出系统", exit_system},
@@ -13,11 +14,32 @@ const MenuOption MENU_OPTIONS[] = {
 const size_t MENU_OPTIONS_COUNT = sizeof(MENU_OPTIONS) / sizeof(MenuOption);
 
 void print_menu() {
-    printf("\n=== 订单管理系统 ===\n");
+    cprint(COLOR_BLUE, "\n=== 订单管理系统 ===\n");
+    
     for (size_t i = 0; i < MENU_OPTIONS_COUNT; i++) {
-        printf("%d: %s\n", MENU_OPTIONS[i].code, MENU_OPTIONS[i].description);
+        WORD color;
+        switch (MENU_OPTIONS[i].code) {
+            case 0: 
+                color = COLOR_RED;
+                break;
+            case 1: 
+                color = COLOR_GREEN;
+                break;
+            case 2: 
+                color = COLOR_RED;
+                break;
+            case 6: 
+                color = COLOR_YELLOW;
+                break;
+            default: 
+                color = COLOR_CYAN;
+                break;
+        }
+        
+        cprint(color, "%d: %s\n", MENU_OPTIONS[i].code, MENU_OPTIONS[i].description);
     }
-    printf("请输入要进行的操作: ");
+    
+    cprint(COLOR_WHITE, "请输入要进行的操作: ");
 }
 
 int get_menu_option() {
@@ -26,7 +48,7 @@ int get_menu_option() {
     clear_line(stdin);
 
     if (option < 0 || option >= MENU_OPTIONS_COUNT) {
-        printf("无效操作\n");
+        cprint(COLOR_RED, "无效操作\n");
         return -1;
     }
 

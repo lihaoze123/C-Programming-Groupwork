@@ -7,6 +7,7 @@ add_executable(main
     src/main.c
     src/menu.c
     src/operation.c
+    src/color.c
 )
 
 target_link_libraries(main

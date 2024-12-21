@@ -7,8 +7,10 @@
 
 #include "menu.h"
 #include "operation.h"
+#include "color.h"
 
 int main(int argc, char* argv[]) {
+    init_console();
     init_logger("order_system.log");
 
     Order_array* order_array = load_orders("orders.txt");
